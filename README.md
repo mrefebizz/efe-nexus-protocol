@@ -1,6 +1,6 @@
 # Efe Nexus Protocol
 
-**Immutable Fixed Peg on Pi Network**  
+Immutable Fixed Peg on Pi Network  
 1 $EFE = 3.14159 π — mathematically enforced, no oracles, no governance changes.
 
 Pure Soroban smart contract implementing a rock-solid peg for the Efe Nexus ecosystem (@EfeNexus on X).  
@@ -17,56 +17,33 @@ This project follows the spirit of **PiRC1** (https://github.com/PiNetwork/PiRC/
 
 See [docs/alignment-with-pirc1.md](docs/alignment-with-pirc1.md) for detailed mapping to PiRC1 sections (vision, core design, participation).
 
-## Current Contracts
+## Architecture Overview
 
-| Contract            | Purpose                          | Status       | Testnet ID (TBD) |
-|---------------------|----------------------------------|--------------|------------------|
-| EfeNexusPolicy      | Peg enforcement & conversions    | Prototype    | —                |
-
-## Build & Deploy (Pi Testnet)
-
-1. Install Soroban CLI:
-
-%% Efe Nexus Protocol Architecture Diagram (dark-theme friendly)
-%% NOTE: Use "architecture-beta" or "flowchart" as preferred; this uses flowchart for compatibility.
-
+```mermaid
 flowchart TB
-  %% Groups (subgraphs)
-  subgraph User Flow ["User Flow (Off-chain Interaction)"]
-    User[User<br/>(Wallet/Interface)]
-  end
+    subgraph "User Flow (Off-chain Interaction)" [User Flow (Off-chain Interaction)]
+        User[User / Pioneer\n(Wallet/Interface)]
+    end
+    subgraph "On-Chain (Pi Testnet/Mainnet)" [On-Chain (Pi Testnet/Mainnet)]
+        Vault[Vault Contract\n- Deposit π\n- Mint/Burn $EFE\n- Calls Policy]
+        Policy[EfeNexusPolicy Contract\n- Fixed Peg: 1 $EFE = 3.14159 π\n- Conversion Functions]
+        PiToken[PiToken\n(π Token - Pi Network native)]
+        EFEToken[EFEToken\n($EFE Token - ERC-20 style)]
+        efePiSwap[efePiSwap\n(Future DEX - Query Rates)]
+    end
 
-  subgraph On-chain ["On-Chain (Pi Testnet/Mainnet)"]
-    Vault[Vault Contract<br/>- Deposit π<br/>- Mint/Burn $EFE<br/>- Calls Policy]
-    Policy[EfeNexusPolicy Contract<br/>- Fixed Peg:<br/>1 $EFE = 3.14159 π<br/>- Conversion Functions]
-    PiToken[π Token<br/>(Pi Network native)]
-    EFEToken[$EFE Token<br/>(ERC-20 style)]
+    User -->|Deposit π| Vault
+    Vault -->|Mint $EFE| EFEToken
+    Vault -->|Burn $EFE| User
+    User -->|Redeem π| Vault
+    Vault -->|Query Peg Logic| Policy
+    Policy -->|Peg Logic --> $EFE Token| EFEToken
+    Policy -->|Peg Logic --> PiToken| PiToken
+    efePiSwap -->|Queries Policy for rates| Policy
 
-    %% DEX stub for future
-    efePiSwap[efePiSwap DEX<br/>(Queries Policy for rates)]
-  end
-
-  %% Flows
-  User -->|Deposit π| Vault
-  Vault -->|Mint $EFE| EFEToken
-  Vault -->|Burn $EFE| EFEToken
-  Vault -->|Redeem π| PiToken
-  Vault -- Calls --> Policy
-  Policy -- Peg Logic --> EFEToken
-  Policy -- Peg Logic --> PiToken
-
-  %% DEX future use
-  efePiSwap -- "Query Rates" --> Policy
-
-  %% Group styling for dark theme
-  classDef dark fill:#222,stroke:#444,color:#eee;
-  classDef component fill:#333,stroke:#888,color:#fff;
-  class User dark;
-  class Vault,Policy,PiToken,EFEToken,efePiSwap component;
-  class On-chain dark;
-  class User Flow dark;
-
-  %% Extra labels for PiRC1, Mainnet/Testnet
-  On-chain:::dark
-```
-````
+    classDef dark fill:#222,stroke:#444,color:#eee;
+    classDef component fill:#333,stroke:#888,color:#fff;
+    class User dark;
+    class Vault,Policy,PiToken,EFEToken,efePiSwap component;
+    class On-chain dark;
+    class User Flow dark;
