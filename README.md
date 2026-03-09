@@ -27,8 +27,6 @@ See [docs/alignment-with-pirc1.md](docs/alignment-with-pirc1.md) for detailed ma
 
 1. Install Soroban CLI:
 
-2. ````markdown name=efe-nexus-mermaid.md
-```mermaid
 %% Efe Nexus Protocol Architecture Diagram (dark-theme friendly)
 %% NOTE: Use "architecture-beta" or "flowchart" as preferred; this uses flowchart for compatibility.
 
