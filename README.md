@@ -1,24 +1,5 @@
 # Efe Nexus Protocol
 
-efe-nexus-protocol/
-├── contracts/
-│   └── efenexus-policy/               # Core peg enforcement contract
-│       ├── src/
-│       │   └── lib.rs                 # Your EfeNexusPolicy code here
-│       ├── tests/                     # Unit tests (add later)
-│       └── Cargo.toml
-├── scripts/                           # Deployment & interaction helpers
-│   ├── deploy-policy.sh
-│   └── invoke-peg-rate.sh
-├── integration/                       # Future: vault/swap calling policy
-├── docs/                              # Extra explanations, diagrams
-│   └── alignment-with-pirc1.md
-├── Cargo.toml                         # Workspace file (multi-crate support)
-├── Cargo.lock
-├── README.md                          # Main project front-page
-├── .gitignore
-└── LICENSE
-
 **Immutable Fixed Peg on Pi Network**  
 1 $EFE = 3.14159 π — mathematically enforced, no oracles, no governance changes.
 
