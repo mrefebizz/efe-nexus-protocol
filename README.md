@@ -21,29 +21,33 @@ See [docs/alignment-with-pirc1.md](docs/alignment-with-pirc1.md) for detailed ma
 
 ```mermaid
 flowchart TB
-    subgraph "User Flow (Off-chain Interaction)" [User Flow (Off-chain Interaction)]
-        User[User / Pioneer\n(Wallet/Interface)]
+    subgraph user_flow["User Flow (Off-chain)"]
+        direction TB
+        User["User\n(Pioneer / Wallet / Interface)"]
     end
-    subgraph "On-Chain (Pi Testnet/Mainnet)" [On-Chain (Pi Testnet/Mainnet)]
-        Vault[Vault Contract\n- Deposit π\n- Mint/Burn $EFE\n- Calls Policy]
-        Policy[EfeNexusPolicy Contract\n- Fixed Peg: 1 $EFE = 3.14159 π\n- Conversion Functions]
-        PiToken[PiToken\n(π Token - Pi Network native)]
-        EFEToken[EFEToken\n($EFE Token - ERC-20 style)]
-        efePiSwap[efePiSwap\n(Future DEX - Query Rates)]
+
+    subgraph on_chain["On-Chain (Pi Testnet / Mainnet)"]
+        direction TB
+        Vault["EfePiVault Contract\n- Deposit π\n- Mint / Burn $EFE\n- Calls Policy"]
+        Policy["EfeNexusPolicy Contract\n- Immutable Peg: 1 $EFE = 3.14159 π\n- Conversion Functions"]
+        PiToken["π Token\n(Pi Network native)"]
+        EfeToken["$EFE Token\n(ERC-20 style on Soroban)"]
+        Swap["efePiSwap\n(Future DEX)\nQueries Policy for rates"]
     end
 
     User -->|Deposit π| Vault
-    Vault -->|Mint $EFE| EFEToken
+    Vault -->|Mint $EFE| EfeToken
     Vault -->|Burn $EFE| User
     User -->|Redeem π| Vault
-    Vault -->|Query Peg Logic| Policy
-    Policy -->|Peg Logic --> $EFE Token| EFEToken
-    Policy -->|Peg Logic --> PiToken| PiToken
-    efePiSwap -->|Queries Policy for rates| Policy
+    Vault -->|Query Peg Rate| Policy
+    Policy -->|Peg Logic → $EFE| EfeToken
+    Policy -->|Peg Logic → π| PiToken
+    Swap -->|Query Rates| Policy
 
-    classDef dark fill:#222,stroke:#444,color:#eee;
-    classDef component fill:#333,stroke:#888,color:#fff;
-    class User dark;
-    class Vault,Policy,PiToken,EFEToken,efePiSwap component;
-    class On-chain dark;
-    class User Flow dark;
+    classDef darkGroup fill:#1e293b,stroke:#475569,stroke-width:2px,color:#e2e8f0
+    classDef component fill:#334155,stroke:#64748b,color:#f1f5f9
+    classDef user fill:#475569,stroke:#94a3b8,color:#e2e8f0
+
+    class user_flow,on_chain darkGroup
+    class User user
+    class Vault,Policy,PiToken,EfeToken,Swap component
